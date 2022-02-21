@@ -1,7 +1,8 @@
-import csv
+import math
 import os
 import shutil
 import tempfile
+import time
 import zipfile
 import requests
 import json
@@ -67,8 +68,9 @@ with open("my_variables.yml", 'r') as stream:
 
 taskid=EnqueueTask(my_variables_map["DATABASE_ID"], my_variables_map["MY_NOTION_INTERNAL_TOKEN"])
 
-dirpath = tempfile.mkdtemp()
-filelist = []
+mytime = str(math.floor(time.time()))
+destpath = os.path.join("files", mytime)
+temppath = tempfile.mkdtemp()
 loop = 1
 while (loop == 1):
     resp = GetTasks(taskid, my_variables_map["MY_NOTION_INTERNAL_TOKEN"])
@@ -77,21 +79,13 @@ while (loop == 1):
         if (v["state"] == "success"):
             if (v["status"]["type"] == "complete"):
                 print("status: " + v["status"]["type"])
-                archive = DownloadArchive(v["status"]["exportURL"], dirpath)
+                archive = DownloadArchive(v["status"]["exportURL"], temppath)
                 with zipfile.ZipFile(archive, 'r') as zip_ref:
-                    filelist += zip_ref.namelist()
-                    zip_ref.extractall(dirpath)
+                    zip_ref.extractall(destpath)
                 loop = 0
                 break
         print("retry")
 
-for f in filelist:
-    myfile=os.path.join(dirpath, f)
-    with open(myfile, newline='') as csvfile:
-        spamreader = csv.reader(csvfile)
-        for row in spamreader:
-            print(row)
-
-shutil.rmtree(dirpath)
+shutil.rmtree(temppath)
 print("Done")
 
