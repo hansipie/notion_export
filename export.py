@@ -72,7 +72,7 @@ class NotionExport:
 
     def GetCSVfile(self):
         mytime = str(math.floor(time.time()))
-        destpath = os.path.join("files", mytime)
+        destpath = os.path.join(os.getcwd(), "archive", mytime)
         temppath = tempfile.mkdtemp()
         loop = 1
         while (loop == 1):
@@ -88,8 +88,9 @@ class NotionExport:
                         loop = 0
                         break
                 print("retry")
-        shutil.rmtree(temppath)        
+        shutil.rmtree(temppath)
+        return(destpath)     
 
 if __name__ == "__main__":
-    NotionExport().GetCSVfile()
-    print("Done.")
+    destpath = NotionExport().GetCSVfile()
+    print("output directory: ", destpath)
