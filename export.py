@@ -11,7 +11,7 @@ import yaml
 class NotionExport:
 
     def __init__(self):
-        with open("my_variables_priv.yml", 'r') as stream:
+        with open("my_variables.yml", 'r') as stream:
             try:
                 self.my_variables_map = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
