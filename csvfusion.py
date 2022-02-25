@@ -1,6 +1,5 @@
 import csv
 import os
-import sqlite3
 import export
 
 def ExtractData(file):
